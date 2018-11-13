@@ -28,11 +28,14 @@ public class ServiceConnexion extends Service {
 			in = new BufferedReader (new InputStreamReader(client.getInputStream ( )));
 			PrintWriter out = new PrintWriter (client.getOutputStream ( ), true);
 			out.println("##### Entrer votre nom d'utilisateur : ###");
-			connectUser(in.readLine());
+			String userConnected = "";
+					userConnected = in.readLine();
+			connectUser(userConnected);
 			out.println("##### Tapez l'action souhaitez: ### \n"+serviceToString());
 			int choix = Integer.parseInt(in.readLine());
 			switch (choix) {
-            case 1:  new ServiceDiscussion(client).run();
+            case 1: 
+            		new ServiceDiscussion(client,userConnected).run();
                      break;
             case 2:  new ServiceRefresh(client).run();;
             		 break;
@@ -50,15 +53,34 @@ public class ServiceConnexion extends Service {
 	}
 	
 	public String serviceToString() {
-		return "  # 1 pour entrer en discussion \n"
+		return    "  # 1 pour entrer en discussion \n"
 				+ "  # 2 pour rafraichir la liste des utilisateurs connectés \n"
 				+ "  # 3 Afficher l'historique des messages envoyés \n"
+				+ "  # 4 Se déconnecter  \n"
 				+ "  # Ne faites rien pour que quelqu'un entre conversation avec vous  ";
 		
 	}
 	
 	public void connectUser(String user) {
+		boolean state = false;
 		for (UserChat userChat : listUser) {
+			if (userChat.getName().equals(user)) {
+				userChat.setConnected(true);
+				state = true;
+			}
+			
+		}
+		if (!state) {
+				this.listUser.add(new UserChat(user));
+		}
+	
+}
+	
+	public void deconnectUser(String user) {
+		for (UserChat userChat : listUser ) {
+			if ( userChat.getName().equals(user)) {
+				userChat.setConnected(false);
+			}
 			
 		}
 	}
