@@ -8,10 +8,12 @@ public class ServiceDiscussion extends Service {
 	// si quelqu'un tente de discuter avec un utilisateur occupé ils recoivent une notification 
 	// il faut une liste permettant de bloquer à 2 user 
 	// il peut y avoir plusieurs discussions en même temps 
+		
 	
 
 	public ServiceDiscussion(Socket client,String user) {
 		super(client);
+		
 		// TODO Auto-generated constructor stub
 	}
 

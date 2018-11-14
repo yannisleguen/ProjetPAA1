@@ -15,7 +15,7 @@ public class Appli {
 	 * il n'y a plusieurs échanges, jusqu'à ce que le client quitte ou se déconnecte (while true)
 	 * Seul des String sont échangés entre le client et le serveur
 	 */
-	private final static int PORT_SERVER = 1998; //Grande année
+	private final static int PORT_SERVER = 2018; 
 	private final static String HOST = "localhost"; //on est en local 127.0.0.1
 	 
 	public static void main(String[] args) {
@@ -33,16 +33,35 @@ public class Appli {
 			System.out.println("Connecté au serveur " + s.getInetAddress() + ":"+ s.getPort());
 			
 			String line ="";
+			String sender="";
 			
 			//Début du process client serveur fin du cycle si line = stop 
+			line = in.readLine();
+			//2 . DISPLAY
+			line = line.replace("jump", "\n");
+			System.out.print(line);
+			//3 . WRITE 
+			sender = keybord.readLine();
+			// 4 . SEND
+			out.println(sender);
 			
-			while (!line.toUpperCase().equals("STOP")) {
+			line = in.readLine();
+			//2 . DISPLAY
+			line = line.replace("jump", "\n");
+			System.out.print(line);
+			
+			
+			
+			while (!line.toUpperCase().equals("STOP") || !sender.toUpperCase().equals("STOP")) {
 				//1 . LISTEN
 				line = in.readLine();
 				//2 . DISPLAY
-				System.out.println(line);
-				//3 . WRITE & SEND
-				out.println(keybord.readLine());
+				line = line.replace("jump", "\n");
+				System.out.print(line);
+				//3 . WRITE 
+				sender = keybord.readLine();
+				// 4 . SEND
+				out.println(sender);
 			}
 			s.close();
 			System.out.println("Fin de la connexion");
