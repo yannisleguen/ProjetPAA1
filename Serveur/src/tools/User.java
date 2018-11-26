@@ -1,16 +1,72 @@
 package tools;
 
+import java.io.BufferedReader;
+import java.io.PrintWriter;
 import java.util.LinkedList;
+
+import Service.ServiceDemanceDiscussion;
+
+
 
 public class User {
 	private String name;
 	private boolean connected;
 	private boolean doNotDisturb;
-	private LinkedList<Conversation> history;
+	private LinkedList<String> history;
+	private PrintWriter out;
+	private BufferedReader in;
+	private ServiceDemanceDiscussion msg;
 	
-	public User(String name) {
+	public User(String name, BufferedReader in, PrintWriter out,ServiceDemanceDiscussion msg) {
 		this.name = name;
+		this.in = in;
+		this.out = out;
+		this.msg = msg;
 	}
+	
+	
+	public LinkedList<String> getHistory() {
+		return history;
+	}
+
+
+	public void setHistory(LinkedList<String> history) {
+		this.history = history;
+	}
+
+
+	public ServiceDemanceDiscussion getMsg() {
+		return msg;
+	}
+
+
+	public void setMsg(ServiceDemanceDiscussion msg) {
+		this.msg = msg;
+	}
+
+
+	
+	
+	
+	public PrintWriter getOut() {
+		return out;
+	}
+
+	public void setOut(PrintWriter out) {
+		this.out = out;
+	}
+
+	public BufferedReader getIn() {
+		return in;
+	}
+
+	public void setIn(BufferedReader in) {
+		this.in = in;
+	}
+	
+
+	
+	
 
 	public synchronized String getName() {
 		return name;
@@ -28,17 +84,15 @@ public class User {
 		this.connected = connected;
 	}
 
-	public  LinkedList<Conversation> getL() {
+	public  LinkedList<String> getL() {
 		return history;
 	}
 
-	public  void setL(LinkedList<Conversation> l) {
+	public void setL(LinkedList<String> l) {
 		this.history = l;
 	}
 	
-	public synchronized  void addConv(Conversation c) {
-		this.history.add(c);
-	}
+	
 
 	public synchronized boolean isDoNotDisturb() {
 		return doNotDisturb;
@@ -47,6 +101,10 @@ public class User {
 	public synchronized void setDoNotDisturb(boolean doNotDisturb) {
 		this.doNotDisturb = doNotDisturb;
 	}
+	public synchronized void addMessage(String msg) {
+		this.history.add(msg);
+	}
+	
 	
 	
 	

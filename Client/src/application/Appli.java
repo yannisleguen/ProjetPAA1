@@ -52,18 +52,25 @@ public class Appli {
 			
 			
 			
-			while (!line.toUpperCase().equals("STOP") || !sender.toUpperCase().equals("STOP")) {
+			while (true) {
 				//1 . LISTEN
 				line = in.readLine();
 				//2 . DISPLAY
+				if (line.toUpperCase().equals("STOP")) {
+					break;
+				}
 				line = line.replace("jump", "\n");
 				System.out.print(line);
 				//3 . WRITE 
+				
 				sender = keybord.readLine();
+				if (sender.toUpperCase().equals("STOP")) {
+					break;
+				}
 				// 4 . SEND
 				out.println(sender);
 			}
-			s.close();
+			//s.close();
 			System.out.println("Fin de la connexion");
 		
 		

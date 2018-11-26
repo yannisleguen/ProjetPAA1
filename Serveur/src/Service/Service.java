@@ -7,7 +7,7 @@ public abstract class Service implements Runnable{
 	
 	public Service (Socket client) {
 		this.client = client;
-	}
+	} 
 	
 	protected void finalize() throws Throwable {
 		 client.close(); 
@@ -16,6 +16,7 @@ public abstract class Service implements Runnable{
 	// lancement du service
 		public void start() {
 			(new Thread(this)).start();		
+			
 	}
 	
 }

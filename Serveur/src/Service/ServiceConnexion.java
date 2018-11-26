@@ -7,14 +7,20 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import tools.User;
 
 public class ServiceConnexion extends Service {
 	Socket client;
 	User currentUser;
+	BufferedReader in;
+	PrintWriter out;
 	private static HashMap<String, User> listUser = new HashMap<String, User>();
 	private static ArrayList<User> listOfConnectedUser = new ArrayList<User>();
+	private ConcurrentLinkedQueue<Object> goodQueue = new ConcurrentLinkedQueue<Object>();
+	
+	private ServiceDemanceDiscussion chat;
 	
 	public ServiceConnexion(Socket client) {
 		super(client);
@@ -26,12 +32,11 @@ public class ServiceConnexion extends Service {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		BufferedReader in;
+
 		try {
 			
-			in = new BufferedReader (new InputStreamReader(client.getInputStream ( )));
-			PrintWriter out = new PrintWriter (client.getOutputStream ( ), true);
+			this.in = new BufferedReader (new InputStreamReader(client.getInputStream ( )));
+			this.out = new PrintWriter (client.getOutputStream ( ), true);
 			out.println("##### Entrer votre nom d'utilisateur : ###");
 			String userConnected = "";
 			userConnected = in.readLine();
@@ -45,37 +50,35 @@ public class ServiceConnexion extends Service {
 			connectUser(userConnected);
 			out.println(listUserConnectedToString());
 			
+			 chat = new ServiceDemanceDiscussion(client,currentUser,listOfConnectedUser,goodQueue);
+			
+			Thread.currentThread().setName(currentUser.getName());
+			
 			
 			int choix;
+			out.println("##### Tapez l'action souhaitée: ### jump"+serviceToString());
+			while (true){
 			
-			while (true) {
-			out.println("##### Tapez l'action souhaitez: ### jump"+serviceToString());
 			choix = Integer.parseInt(in.readLine());
 			switch (choix) {
-            case 1: 
-            		
-            	    new ServiceDiscussion(client,userConnected).run();
-                    // break;
-            case 2:  out.println(listUserConnectedToString());
-            		 
-            		 
-            case 3:  new ServiceHisto(client).run();
-   		 			
-   		 			
-            case 4: 
-            		deconnectUser();
+            case 1: chat.run();
+                    break;
+            case 2: out.println(listUserConnectedToString() + "##### Tapez l'action souhaitée: ### jump"+serviceToString());
+            		break;
+            case 3:  new ServiceHisto(client,currentUser).run();
+            		break;
+            case 4: deconnectUser();
             		out.println("STOP");
-            case 5: 
-        		new ServiceHelloWorld(client).run();
+            		break;
+            case 5: out.println("En attente...");
+					goodQueue.add(this);
+				    break;
 	 			    
 			}
-			
+			if (choix == 4) {
+				break;
 			}
-			
-			
-			
-			
-			
+			}
 			
 			
 		} catch (IOException e) {
@@ -90,6 +93,7 @@ public class ServiceConnexion extends Service {
 				+ "  # 2 pour rafraichir la liste des utilisateurs connectés jump"
 				+ "  # 3 Afficher l'historique des messages envoyés jump"
 				+ "  # 4 Se déconnecter  jump"
+				+   "# 5 Attendre une connexion  jump"
 				+ "  # Ne faites rien pour que quelqu'un entre conversation avec vous  ";
 		
 	}
@@ -98,9 +102,12 @@ public class ServiceConnexion extends Service {
 		if (isUserExist(user)) {
 			this.currentUser = listUser.get(user);
 			currentUser.setConnected(true);
+			//Thread.currentThread().setName(currentUser.getName());
 		}else {
-			currentUser = new User(user);
+			currentUser = new User(user,in,out,chat);
+			currentUser.setConnected(true);
 			listUser.put(user, currentUser);
+			//Thread.currentThread().setName(currentUser.getName());
 		}
 		listOfConnectedUser.add(currentUser);
 	
@@ -114,11 +121,12 @@ public class ServiceConnexion extends Service {
 	}
 	
 	public void deconnectUser() {
-		listUser.get(this.currentUser).setConnected(false);;		
+		this.currentUser.setConnected(false);	
 	}
 	public synchronized String listUserConnectedToString() {
 		String result ="";
 		for (User user : listOfConnectedUser) {
+			if (user.isConnected())
 			result+="USER : "+user.getName()+" Occupé : "+user.isDoNotDisturb()+ "jump";
 		}
 		return result;

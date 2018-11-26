@@ -1,5 +1,6 @@
 package tools;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -11,7 +12,7 @@ public class Conversation {
 	private int nbPerson;
 	
 	public Conversation(User sender,User recipient) {
-		nbPerson = 2;
+		nbPerson = 2; 
 		sender.setDoNotDisturb(true);
 		recipient.setDoNotDisturb(true);
 		listMsg = new ArrayList<Message>();
@@ -19,7 +20,15 @@ public class Conversation {
 		
 	}
 	
-	public void sendMessage(User sender,User recipient,String content) {
+	public synchronized void sendMessage(User sender,User recipient) {
+		String content ="";
+		try {
+			content = sender.getIn().readLine();
+			recipient.getOut().println();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		Message myNewMsg = new Message(recipient,sender,content);
 		dateLastMsg = myNewMsg.getDate();
 		listMsg.add(myNewMsg);
@@ -31,6 +40,7 @@ public class Conversation {
 		nbPerson = 0;
 		
 	}
+	
 	
 
 	public synchronized ArrayList<Message> getListMsg() {
