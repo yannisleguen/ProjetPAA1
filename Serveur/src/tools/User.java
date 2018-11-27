@@ -2,7 +2,7 @@ package tools;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
-import java.util.LinkedList;
+import java.util.Vector;
 
 import Service.ServiceDemanceDiscussion;
 
@@ -12,7 +12,7 @@ public class User {
 	private String name;
 	private boolean connected;
 	private boolean doNotDisturb;
-	private LinkedList<String> history;
+	private Vector<String> history;
 	private PrintWriter out;
 	private BufferedReader in;
 	private ServiceDemanceDiscussion msg;
@@ -22,15 +22,16 @@ public class User {
 		this.in = in;
 		this.out = out;
 		this.msg = msg;
+		this.history = new Vector<String>();
 	}
 	
 	
-	public LinkedList<String> getHistory() {
+	public Vector<String> getHistory() {
 		return history;
 	}
 
 
-	public void setHistory(LinkedList<String> history) {
+	public void setHistory(Vector<String> history) {
 		this.history = history;
 	}
 
@@ -84,11 +85,11 @@ public class User {
 		this.connected = connected;
 	}
 
-	public  LinkedList<String> getL() {
+	public  Vector<String> getL() {
 		return history;
 	}
 
-	public void setL(LinkedList<String> l) {
+	public void setL(Vector<String> l) {
 		this.history = l;
 	}
 	

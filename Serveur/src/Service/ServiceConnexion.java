@@ -41,12 +41,7 @@ public class ServiceConnexion extends Service {
 			String userConnected = "";
 			userConnected = in.readLine();
 			System.out.println("log user = "+userConnected);
-			try {
-				Thread.currentThread().sleep(200);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
 			connectUser(userConnected);
 			out.println(listUserConnectedToString());
 			
@@ -71,12 +66,16 @@ public class ServiceConnexion extends Service {
             		out.println("STOP");
             		break;
             case 5: out.println("En attente...");
-					goodQueue.add(this);
 				    break;
 	 			    
 			}
 			if (choix == 4) {
 				break;
+			}else if (choix == 5) {
+				String line = "";
+				while(true) {
+					//line = in.readLine();
+				}
 			}
 			}
 			

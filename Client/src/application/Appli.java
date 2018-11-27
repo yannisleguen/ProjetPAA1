@@ -7,6 +7,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import thread.RecieverThread;
+import thread.SenderThread;
+
 public class Appli {
 	
 	/*
@@ -22,71 +25,31 @@ public class Appli {
 		// TODO Auto-generated method stub
 		Socket s = null;
 		
-		try {
-			s = new Socket(HOST, PORT_SERVER);
-		
-			BufferedReader in = new BufferedReader (new InputStreamReader(s.getInputStream ( )));
-			PrintWriter out = new PrintWriter (s.getOutputStream ( ), true);
-			BufferedReader keybord = new BufferedReader(new InputStreamReader(System.in)); 
-			
-			//Information sur le serveur
-			System.out.println("Connecté au serveur " + s.getInetAddress() + ":"+ s.getPort());
-			
-			String line ="";
-			String sender="";
-			
-			//Début du process client serveur fin du cycle si line = stop 
-			line = in.readLine();
-			//2 . DISPLAY
-			line = line.replace("jump", "\n");
-			System.out.print(line);
-			//3 . WRITE 
-			sender = keybord.readLine();
-			// 4 . SEND
-			out.println(sender);
-			
-			line = in.readLine();
-			//2 . DISPLAY
-			line = line.replace("jump", "\n");
-			System.out.print(line);
-			
-			
-			
-			while (true) {
-				//1 . LISTEN
-				line = in.readLine();
-				//2 . DISPLAY
-				if (line.toUpperCase().equals("STOP")) {
-					break;
-				}
-				line = line.replace("jump", "\n");
-				System.out.print(line);
-				//3 . WRITE 
+			try {
+				s = new Socket(HOST, PORT_SERVER);
+				//Information sur le serveur
 				
-				sender = keybord.readLine();
-				if (sender.toUpperCase().equals("STOP")) {
-					break;
-				}
-				// 4 . SEND
-				out.println(sender);
+				System.out.println("Connecté au serveur " + s.getInetAddress() + ":"+ s.getPort());
+				BufferedReader in = new BufferedReader (new InputStreamReader(s.getInputStream ( )));
+				PrintWriter out = new PrintWriter (s.getOutputStream ( ), true);
+				
+				new RecieverThread(in).runGetMessage();
+				new SenderThread(out).runSendMessage();
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			//s.close();
-			System.out.println("Fin de la connexion");
+		
+			
+			
+			
 		
 		
-		} catch (UnknownHostException e1) {
-				// TODO Auto-generated catch block
-			System.err.println("Host inconnu");
-			e1.printStackTrace();
-		} catch (IOException e1) {
-				// TODO Auto-generated catch block
-			System.err.println("Fin de la connexion");
-			e1.printStackTrace();
-		}
-		
-		
-		try { if (s != null)s.close();} 
-		catch (IOException e) {e.printStackTrace();}
+			
+			
 
 	}
 
