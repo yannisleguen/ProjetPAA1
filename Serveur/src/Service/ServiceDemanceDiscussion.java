@@ -2,8 +2,7 @@ package Service;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.LinkedList;
 
 import tools.User;
 
@@ -12,15 +11,16 @@ public class ServiceDemanceDiscussion extends Service {
 	
 	private User currentUser;
 	private User u;
-	ArrayList<User> listOfConnectedUser;
-	ConcurrentLinkedQueue<Object> goodQueue;
+	private boolean nulluser = true;
+	LinkedList<User> listOfConnectedUser;
 	
 	
-	public ServiceDemanceDiscussion(Socket client, User currentUser, ArrayList<User> listOfConnectedUser, ConcurrentLinkedQueue<Object> goodQueue) {
+	
+	public ServiceDemanceDiscussion(Socket client, User currentUser, LinkedList<User> listOfConnectedUser) {
 		super(client);
 		this.currentUser = currentUser;
 		this.listOfConnectedUser = listOfConnectedUser;
-		this.goodQueue = goodQueue;
+	
 		
 		
 	}
@@ -38,9 +38,10 @@ public class ServiceDemanceDiscussion extends Service {
 		for (User user : listOfConnectedUser) {
 			if (user.getName().equals(choix)) {
 				u = user;
-			}else {u = null;}
+				nulluser = false;
+			
 		}
-		if(u!=null) {
+		if(!nulluser) {
 			if (!u.isDoNotDisturb()) {
 				currentUser.setDoNotDisturb(true);
 				u.setDoNotDisturb(true);
@@ -64,21 +65,18 @@ public class ServiceDemanceDiscussion extends Service {
 			
 				
 				t1.interrupt();
-				
-				currentUser.setDoNotDisturb(false);
 				t2.interrupt();
+				currentUser.setDoNotDisturb(false);
 				u.setDoNotDisturb(false);
-				
-				
-				
-				
-				
+				u.setFlagEndOfConv(true);
+				currentUser.setFlagEndOfConv(true);
 			}else
 			{
 				currentUser.getOut().println("User pas dispo, retour au menu");
 			}
 		}else {
 			currentUser.getOut().println("User inconnu, retour au menu");
+		}
 		}
 		
 	}

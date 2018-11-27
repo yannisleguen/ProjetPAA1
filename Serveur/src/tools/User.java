@@ -16,15 +16,28 @@ public class User {
 	private PrintWriter out;
 	private BufferedReader in;
 	private ServiceDemanceDiscussion msg;
+	private boolean flagEndOfConv;
 	
+	
+
+
 	public User(String name, BufferedReader in, PrintWriter out,ServiceDemanceDiscussion msg) {
 		this.name = name;
 		this.in = in;
 		this.out = out;
 		this.msg = msg;
 		this.history = new Vector<String>();
-		//init
+		initHistory();
 		
+	}
+	
+	public synchronized boolean isFlagEndOfConv() {
+		return flagEndOfConv;
+	}
+
+
+	public synchronized void setFlagEndOfConv(boolean flagEndOfConv) {
+		this.flagEndOfConv = flagEndOfConv;
 	}
 	
 	
@@ -87,28 +100,18 @@ public class User {
 		this.connected = connected;
 	}
 
-	public  Vector<String> getL() {
-		return history;
-	}
-
-	public void setL(Vector<String> l) {
-		this.history = l;
-	}
-	
-	
-
 	public synchronized boolean isDoNotDisturb() {
 		return doNotDisturb;
 	}
 
-	public synchronized void setDoNotDisturb(boolean doNotDisturb) {
+	public void setDoNotDisturb(boolean doNotDisturb) {
 		this.doNotDisturb = doNotDisturb;
 	}
-	public synchronized void addMessage(String msg) {
+	public void addMessage(String msg) {
 		this.history.add(msg);
 	}
 	
-	public synchronized void initHistory() {
+	public void initHistory() {
 		this.history.add("-----------------------------------------------------------");
 	}
 	

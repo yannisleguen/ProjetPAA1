@@ -1,6 +1,7 @@
 package server;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 
 import Service.ServiceConnexion;
@@ -12,8 +13,9 @@ public class Serveur {
 	// Cree un serveur TCP - objet de la classe ServerSocket
 	public Serveur(int port) {
 		try {listen_socket = new ServerSocket(port);
+		listen_socket.getInetAddress();
 		System.out.println("### SERVEUR BIEN LANCÉ SUR "
-		+listen_socket.getInetAddress().toString()+":"+port+" ###");} 
+		+InetAddress.getLocalHost()+":"+port+" ###");} 
 		catch (IOException e) {
 			System.err.println("### IMPOSSIBLE DE LANCER LE SERVEUR ###");
 			throw new RuntimeException(e);

@@ -5,9 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.LinkedList;
 
 import tools.User;
 
@@ -17,8 +16,9 @@ public class ServiceConnexion extends Service {
 	BufferedReader in;
 	PrintWriter out;
 	private static HashMap<String, User> listUser = new HashMap<String, User>();
-	private static ArrayList<User> listOfConnectedUser = new ArrayList<User>();
-	private ConcurrentLinkedQueue<Object> goodQueue = new ConcurrentLinkedQueue<Object>();
+	//La linkedList est synchnosized par défaut.
+	private static LinkedList<User> listOfConnectedUser = new LinkedList<User>();
+	
 	
 	private ServiceDemanceDiscussion chat;
 	
@@ -45,7 +45,7 @@ public class ServiceConnexion extends Service {
 			connectUser(userConnected);
 			out.println(listUserConnectedToString());
 			
-			 chat = new ServiceDemanceDiscussion(client,currentUser,listOfConnectedUser,goodQueue);
+			 chat = new ServiceDemanceDiscussion(client,currentUser,listOfConnectedUser);
 			
 			Thread.currentThread().setName(currentUser.getName());
 			
@@ -53,12 +53,17 @@ public class ServiceConnexion extends Service {
 			int choix;
 			
 			while (true){
+			currentUser.setFlagEndOfConv(false);
 			out.println("##### Tapez l'action souhaitée: ### jump"+serviceToString());
 			choix = Integer.parseInt(in.readLine());
 			switch (choix) {
-            case 1: chat.run();
+            case 1: //chat.run();
+            	
+	    		//Mal codé mais répond au besoin. On pourrait créer une clé de sortie pour s'assuré que l'utilisateur ne l'écriras pas
+            		chat.run();
+            	
                     break;
-            case 2: out.println(listUserConnectedToString() + "##### Tapez l'action souhaitée: ### jump"+serviceToString());
+            case 2: out.println(listUserConnectedToString());
             		break;
             case 3:  new ServiceHisto(client,currentUser).run();
             		break;
@@ -71,8 +76,8 @@ public class ServiceConnexion extends Service {
 					e.printStackTrace();
 				}
             		break;
-            case 5: out.println("En attente...");
-				    while(!currentUser.getHistory().get(currentUser.getHistory().size()-1).contains("a quitté") || currentUser.getHistory().size()==0){
+            case 5: out.println("En attente de connexion ...");
+				    while(!currentUser.isFlagEndOfConv()){
 				    		//Mal codé mais répond au besoin. On pourrait créer une clé de sortie pour s'assuré que l'utilisateur ne l'écriras pas
 				    }
             		break;
@@ -96,12 +101,12 @@ public class ServiceConnexion extends Service {
 				+ "  # 2 pour rafraichir la liste des utilisateurs connectés jump"
 				+ "  # 3 Afficher l'historique des messages envoyés jump"
 				+ "  # 4 Se déconnecter  jump"
-				+   "# 5 Attendre une connexion  jump"
-				+ "  # Ne faites rien pour que quelqu'un entre conversation avec vous  ";
+				+ "  # 5 Attendre une connexion  jump";
 		
 	}
 	
-	public synchronized void connectUser(String user) {
+	//Pas besoin de synchronized car les méthode setConnected de la classe User sont synchronisée 
+	public  void connectUser(String user) {
 		if (isUserExist(user)) {
 			this.currentUser = listUser.get(user);
 			currentUser.setConnected(true);
