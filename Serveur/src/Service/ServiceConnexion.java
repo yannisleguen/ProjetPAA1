@@ -51,9 +51,9 @@ public class ServiceConnexion extends Service {
 			
 			
 			int choix;
-			out.println("##### Tapez l'action souhaitée: ### jump"+serviceToString());
-			while (true){
 			
+			while (true){
+			out.println("##### Tapez l'action souhaitée: ### jump"+serviceToString());
 			choix = Integer.parseInt(in.readLine());
 			switch (choix) {
             case 1: chat.run();
@@ -64,18 +64,22 @@ public class ServiceConnexion extends Service {
             		break;
             case 4: deconnectUser();
             		out.println("STOP");
+				try {
+					this.finalize();
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             		break;
             case 5: out.println("En attente...");
-				    break;
+				    while(!currentUser.getHistory().get(currentUser.getHistory().size()-1).contains("a quitté") || currentUser.getHistory().size()==0){
+				    		//Mal codé mais répond au besoin. On pourrait créer une clé de sortie pour s'assuré que l'utilisateur ne l'écriras pas
+				    }
+            		break;
 	 			    
 			}
 			if (choix == 4) {
 				break;
-			}else if (choix == 5) {
-				String line = "";
-				while(true) {
-					//line = in.readLine();
-				}
 			}
 			}
 			

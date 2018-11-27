@@ -27,7 +27,7 @@ public class Appli {
 		
 			try {
 				s = new Socket(HOST, PORT_SERVER);
-				//Information sur le serveur
+				//Information sur le serveur 
 				
 				System.out.println("Connecté au serveur " + s.getInetAddress() + ":"+ s.getPort());
 				BufferedReader in = new BufferedReader (new InputStreamReader(s.getInputStream ( )));

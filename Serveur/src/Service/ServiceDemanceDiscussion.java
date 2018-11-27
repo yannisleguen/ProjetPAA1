@@ -5,12 +5,11 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-
 import tools.User;
 
 public class ServiceDemanceDiscussion extends Service {
 
-	private Socket client;
+	
 	private User currentUser;
 	private User u;
 	ArrayList<User> listOfConnectedUser;
@@ -19,7 +18,6 @@ public class ServiceDemanceDiscussion extends Service {
 	
 	public ServiceDemanceDiscussion(Socket client, User currentUser, ArrayList<User> listOfConnectedUser, ConcurrentLinkedQueue<Object> goodQueue) {
 		super(client);
-		this.client = client;
 		this.currentUser = currentUser;
 		this.listOfConnectedUser = listOfConnectedUser;
 		this.goodQueue = goodQueue;
@@ -40,9 +38,9 @@ public class ServiceDemanceDiscussion extends Service {
 		for (User user : listOfConnectedUser) {
 			if (user.getName().equals(choix)) {
 				u = user;
-			}
+			}else {u = null;}
 		}
-		synchronized (this) {
+		if(u!=null) {
 			if (!u.isDoNotDisturb()) {
 				currentUser.setDoNotDisturb(true);
 				u.setDoNotDisturb(true);
@@ -66,14 +64,21 @@ public class ServiceDemanceDiscussion extends Service {
 			
 				
 				t1.interrupt();
+				
+				currentUser.setDoNotDisturb(false);
 				t2.interrupt();
+				u.setDoNotDisturb(false);
+				
+				
 				
 				
 				
 			}else
 			{
-				currentUser.getOut().println("User pas dispo");
+				currentUser.getOut().println("User pas dispo, retour au menu");
 			}
+		}else {
+			currentUser.getOut().println("User inconnu, retour au menu");
 		}
 		
 	}

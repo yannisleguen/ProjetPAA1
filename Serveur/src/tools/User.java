@@ -23,6 +23,8 @@ public class User {
 		this.out = out;
 		this.msg = msg;
 		this.history = new Vector<String>();
+		//init
+		
 	}
 	
 	
@@ -104,6 +106,10 @@ public class User {
 	}
 	public synchronized void addMessage(String msg) {
 		this.history.add(msg);
+	}
+	
+	public synchronized void initHistory() {
+		this.history.add("-----------------------------------------------------------");
 	}
 	
 	
