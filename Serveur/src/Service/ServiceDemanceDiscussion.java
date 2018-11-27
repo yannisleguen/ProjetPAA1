@@ -63,16 +63,15 @@ public class ServiceDemanceDiscussion extends Service {
 					e.printStackTrace();
 				}
 			
-				
 				t1.interrupt();
 				t2.interrupt();
 				currentUser.setDoNotDisturb(false);
 				u.setDoNotDisturb(false);
 				u.setFlagEndOfConv(true);
 				currentUser.setFlagEndOfConv(true);
-			}else
-			{
+			}else if(u.isDoNotDisturb()){
 				currentUser.getOut().println("User pas dispo, retour au menu");
+				u.addMessage(currentUser.getName()+" a essayé de vous joindre");
 			}
 		}else {
 			currentUser.getOut().println("User inconnu, retour au menu");
